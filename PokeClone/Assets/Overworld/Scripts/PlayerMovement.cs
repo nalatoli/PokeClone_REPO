@@ -40,11 +40,27 @@ public class PlayerMovement : MonoBehaviour
         /* If Player is Controllable */
         if(isMovable)
         {
+            /* Declare Parameters */
+            bool isKeyPressed = true;
+            RaycastHit hit;
+
             /* Get Direction of Player */
-            if      (Input.GetKey(KeyCode.W)) { dir = Vector3.up;       targetPos += dir; }
-            else if (Input.GetKey(KeyCode.D)) { dir = Vector3.right;    targetPos += dir; }
-            else if (Input.GetKey(KeyCode.S)) { dir = Vector3.down;     targetPos += dir; }
-            else if (Input.GetKey(KeyCode.A)) { dir = Vector3.left;     targetPos += dir; }
+            if      (Input.GetKey(KeyCode.W)) { dir = Vector3.up;}
+            else if (Input.GetKey(KeyCode.D)) { dir = Vector3.right; }
+            else if (Input.GetKey(KeyCode.S)) { dir = Vector3.down; }
+            else if (Input.GetKey(KeyCode.A)) { dir = Vector3.left; }
+            else                              { isKeyPressed = false; }
+
+            if (isKeyPressed)
+                if(Physics.Raycast(transform.position, dir, out hit, 1))
+                {
+                    Debug.DrawRay(transform.position, dir, Color.red, 3);
+                    Debug.Log(hit.collider.tag);
+                    targetPos += dir;
+                }
+
+
+
         }
 
         /* Move Player */
