@@ -4,16 +4,17 @@ using UnityEngine;
 
 public class BattleRoutine : MonoBehaviour
 {
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+       
     }
     //check if trainer or wild
         //if trainer, trainer appears and sends out pokemon
