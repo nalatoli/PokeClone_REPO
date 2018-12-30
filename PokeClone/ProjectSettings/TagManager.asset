@@ -6,6 +6,8 @@ TagManager:
   tags:
   - TallGrass
   - Obstacle
+  - Interactable
+  - Mover
   layers:
   - Default
   - TransparentFX
@@ -15,7 +17,7 @@ TagManager:
   - UI
   - 
   - 
-  - Obstacle
+  - Object
   - 
   - 
   - 
@@ -42,4 +44,19 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Environment
+    uniqueID: 3738150289
+    locked: 0
+  - name: Buildings
+    uniqueID: 3305385481
+    locked: 0
+  - name: Doors
+    uniqueID: 694679947
+    locked: 0
+  - name: Character
+    uniqueID: 1712723027
+    locked: 0
+  - name: Trees
+    uniqueID: 903384423
     locked: 0
