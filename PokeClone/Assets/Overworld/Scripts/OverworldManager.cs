@@ -4,18 +4,37 @@ using UnityEngine;
 
 public class OverworldManager : MonoBehaviour
 {
+    /* Adjustable Parameter */
+    public GameObject activeArea;
+
     /* Public Parameters */
     public bool isPlayerControllable;
 
-    // Start is called before the first frame update
+    /* Private Parameters */
+    private PlayerMovement playerScript;
+
     void Start()
     {
+        /* Initialize Parameters */
         isPlayerControllable = true;
+        playerScript = FindObjectOfType<PlayerMovement>();
+        activeArea.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    //void Update()
+    //{
         
+    //}
+
+    public void UpdateActiveArea(GameObject area)
+    {
+        /* Activate New Area */
+        area.SetActive(true);
+
+        /* Deactivate Old Area */
+        activeArea.SetActive(false);
+
+        /* Update Area */
+        activeArea = area;
     }
 }

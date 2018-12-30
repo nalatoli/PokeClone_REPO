@@ -13,10 +13,14 @@ using UnityEngine;
  ****************************************************************************************/
 public class PlayerMovement : MonoBehaviour
 {
+
+    /* Adjustable Parameter */
+    public bool godMode;
+
     /* Direction -> Animation Trigger */
     Dictionary<Vector2, string> dir2trigger = new Dictionary<Vector2, string>() {
         {Vector2.up,    "goUp" },
-        {Vector2.right, "goRight" },
+        {Vector2.right, "goLeft" },
         {Vector2.down,  "goDown" },
         {Vector2.left,  "goLeft" }
     };
@@ -34,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
     /* Private Parameters */
     private Animator anim;
     private OverworldManager overworld;
+    private SpriteRenderer renderer;
     private Motion current = new Motion();
     private Motion previous = new Motion();
     private Vector2 targetPos;
@@ -41,25 +46,26 @@ public class PlayerMovement : MonoBehaviour
     void Start ()
     {
         /* Initialize Parameters */
-        walkingSpeed = 3;
-        runningSpeed = 6;
+        godMode = false;
+        walkingSpeed = 3.5f;
+        runningSpeed = 8;
         anim = GetComponent<Animator>();
         overworld = FindObjectOfType<OverworldManager>();
-        current.dir = Vector2.down; current.speed = 0;
-        previous.dir = current.dir; previous.speed = current.speed;
+        renderer = GetComponent<SpriteRenderer>();
+        current.dir = Vector2.down;
+        current.speed = 0;
+        previous.dir = current.dir;
+        previous.speed = current.speed;
         targetPos = transform.position;
     }
 
     void Update ()
     {
         /* If Player is Controllable */
-        if(overworld.isPlayerControllable)
+        if (overworld.isPlayerControllable)
         {
-            /* Declare Parameters */
-            RaycastHit2D hit;
+            /* Determine Pending Direction */
             bool isMovementInitiated = true;
-
-            /* Get Direction of Player */
             if      (Input.GetKey(KeyCode.UpArrow))     { current.dir = Vector2.up;}
             else if (Input.GetKey(KeyCode.RightArrow))  { current.dir = Vector2.right; }
             else if (Input.GetKey(KeyCode.DownArrow))   { current.dir = Vector2.down; }
@@ -67,13 +73,13 @@ public class PlayerMovement : MonoBehaviour
             else                                        { current.speed = 0; isMovementInitiated = false; }
 
             /* Get Any Colliders In Front of Player */
-            hit = Physics2D.Raycast(transform.position, current.dir, 1, ~LayerMask.GetMask("Default"));
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, current.dir, 1, ~LayerMask.GetMask("Default"));
 
             /* If Movement Key Is Pressed */
             if (isMovementInitiated)
             {
                 /* Update Speed */
-                current.speed = Input.GetKey(KeyCode.LeftShift) ? runningSpeed : walkingSpeed;
+                current.speed = Input.GetKey(KeyCode.LeftShift) ? 8 : 3.5f;
 
                 /* If There is A Collider In Front of Player */
                 if (hit.collider != null)
@@ -87,7 +93,7 @@ public class PlayerMovement : MonoBehaviour
                     }
 
                     /* Else, Update Target Position if No Obstruction */
-                    else if (hit.collider.tag != "Obstacle" && hit.collider.tag != "Interactable")
+                    else if (hit.collider.tag != "Obstacle" && hit.collider.tag != "Interactable" || godMode)
                         StartCoroutine(MovePlayer());
                 }
 
@@ -110,13 +116,26 @@ public class PlayerMovement : MonoBehaviour
             /* If Direction or Speed Has Changed */
             if(current.dir != previous.dir || current.speed != previous.speed)
             {
-                /* Update Parameters and Animation */
+                /* Update Parameters */
                 previous.dir = current.dir;
                 previous.speed = current.speed;
+
+                /* Trigger Animation */
                 anim.SetFloat("Speed", current.speed);
                 anim.SetTrigger(dir2trigger[current.dir]);
+
+                /* Flip If Player is Going to the Right */
+                if (current.dir == Vector2.right) renderer.flipX = true;
+                else                              renderer.flipX = false;
             }
         }      
+    }
+
+    public void Transport(Vector2 location)
+    {
+        /* Warp Player */
+        transform.position = location;
+        targetPos = location;
     }
 
     IEnumerator MovePlayer ()

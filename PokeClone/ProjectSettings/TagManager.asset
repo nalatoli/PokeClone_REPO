@@ -8,6 +8,7 @@ TagManager:
   - Obstacle
   - Interactable
   - Mover
+  - Area
   layers:
   - Default
   - TransparentFX

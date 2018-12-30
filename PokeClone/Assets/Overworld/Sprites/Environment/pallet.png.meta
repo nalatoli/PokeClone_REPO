@@ -45,6 +45,7 @@ TextureImporter:
     21300080: mailbox1_top
     21300082: house_roof
     21300084: lab_roof
+    21300086: tree
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -984,6 +985,26 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 0fc1bcbef469f5f439c7c69383e6722f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tree
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 205
+        width: 31
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3aac12b48fba3ab488218437b1910f9b
       vertices: []
       indices: 
       edges: []

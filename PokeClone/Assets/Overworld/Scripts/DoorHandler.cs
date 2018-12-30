@@ -12,19 +12,27 @@ using UnityEngine;
 public class DoorHandler : MonoBehaviour
 {
     /*Adjustable Parameter */
-    public Vector3 warpLocation;
+    public GameObject warpTile;
     
     /* Private Parameters */
     private Animator anim;
     private PlayerMovement playerScript;
     private Animator playerAnim;
     private OverworldManager overworld;
+    private Vector2 warpPosition;
+    private GameObject warpArea;
 
-    void Start()
+    void Start ()
     {
         /* Initialize Parameters */
         anim = GetComponent<Animator>();
         overworld = FindObjectOfType<OverworldManager>();
+        warpPosition = warpTile.transform.position;
+
+        /* Get Warp Area */
+        Transform tmpT = warpTile.transform.parent;
+        while (tmpT.tag != "Area") {  tmpT = tmpT.parent; }
+        warpArea = tmpT.gameObject;
     }
 
     void doEvent(GameObject player)
@@ -64,10 +72,10 @@ public class DoorHandler : MonoBehaviour
         playerAnim.SetTrigger("goUp");
 
         /* Warp Player */
-        player.transform.position = warpLocation;
+        playerScript.Transport(warpPosition);
+        overworld.UpdateActiveArea(warpArea);
 
         /* Return Control To Player */
         overworld.isPlayerControllable = true;
-
     }
 }
