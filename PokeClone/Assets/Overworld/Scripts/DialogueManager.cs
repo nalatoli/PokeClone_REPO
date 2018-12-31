@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ public class DialogueManager : MonoBehaviour
     /* Game Objects */
     public GameObject textContainer;
     public GameObject scrollerContainer;
-    public Text textBox;
+    public TextMeshProUGUI textBox;
 
     /* Adjustable Parameters */
     public float printDelay;
@@ -20,6 +21,7 @@ public class DialogueManager : MonoBehaviour
     /* Private Parameters */
     private ScrollRect scroller;
     private uint lines;
+    private bool isZpressed;
 
     void Start()
     {
@@ -34,9 +36,8 @@ public class DialogueManager : MonoBehaviour
         /* Set Default Parameters */
         printDelay = 0.02f;
         printDelayFast = 1E-5f;
-        
+        isZpressed = false;
     }
-
 
     public void SetTextVisibility(bool state)
     {
@@ -47,7 +48,7 @@ public class DialogueManager : MonoBehaviour
     public void ClearText()
     {
         /* Reset Text */
-        textBox.text = null;
+        textBox.text = "";
         scroller.verticalNormalizedPosition = 1;
         lines = 1;
     }
@@ -68,25 +69,18 @@ public class DialogueManager : MonoBehaviour
     {
         /* Initialize Parameters */
         isPrinting = true;
-        string tmpStr;
 
         /* Get Each Word in Dialogue */
         foreach (string word in text.Split(' '))
         {
-            /* Initialize New Line Marker to False */
-            bool isNewLine = false;
-
             /* If String is a Carriage Return */
             if (word == "<cr>")
             {
-                 /* Wait For User to Continue */
-                // make little arrow appear
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Z));
+                /* Wait For User to Continue */
+                yield return StartCoroutine(MoveArrow());
 
-                /* Reset Line Counter/Scroll/Text */
-                lines = 1;
-                scroller.verticalNormalizedPosition = 1;
-                textBox.text = null;
+                /* Reset Text Box */
+                ClearText();
             }
 
             /* If String is a Break */
@@ -96,57 +90,58 @@ public class DialogueManager : MonoBehaviour
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Z));
             }
 
-            /* If String is a Break */
+            /* If String is a Line Feed */
             else if (word == "<lf>")
             {
-                /* Increment Line Count and Mark New Line */
-                lines++;
-                isNewLine = true;
+                /* If More than 2 Lines */
+                if (++lines > 2)
+                {
+                    /* Wait for User Then Scroll */
+                    yield return StartCoroutine(MoveArrow());
+                    yield return StartCoroutine(Scroll());
+                }
+
+                /* Add New Line */
                 textBox.text += '\n';
             }
 
             /* Else (Word is NOT Special) */
             else
             {
-                /* Display Invisible Word and Force Canvas Update */
-                tmpStr = "<color=#00000000>" + word + " </color>";
-                textBox.text += tmpStr;
+                /* Print Invisible Word and Force Onto Text Box */
+                string wordBuff = "<color=#00000000>" + word + " </color>";
+                textBox.text += wordBuff;
                 Canvas.ForceUpdateCanvases();
 
+                /* Remove Invisible Word from Buffer and Clear Word Buffer */
+                textBox.text = textBox.text.Substring(0, textBox.text.Length - wordBuff.Length);
+                wordBuff = "";
+
                 /* Check If New Line Has Been Created */
-                if(lines != textBox.cachedTextGenerator.lineCount)
+                if (lines != textBox.textInfo.lineCount)
                 {
-                    /* Mark That New Line Has Occured */
-                    isNewLine = true;
+                    /* Add NewLine to Word Buffer */
+                    wordBuff += '\n';
 
                     /* If More Than 2 Lines Are Detected */
                     if (++lines > 2)
                     {
-                        /* Wait For User to Continue */
-                        // make little arrow appear
-                        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Z));
-
-                        /* While Scroll Bar Has NOT Reached New Line */
-                        float targetScrollPos = scroller.verticalNormalizedPosition - 0.13f;
-                        while (scroller.verticalNormalizedPosition >= targetScrollPos)
-                        {
-                            /* Scroll Text */
-                            scroller.verticalNormalizedPosition -= 0.01f;
-                            yield return new WaitForSeconds(1E-2f);
-                        }
+                        /* Wait for User Then Scroll */
+                        yield return StartCoroutine(MoveArrow());
+                        yield return StartCoroutine(Scroll());
                     }
                 }
 
-                /* Remove Invisible Word */
-                textBox.text = textBox.text.Substring(0, textBox.text.Length - tmpStr.Length);
+                /* Add Word and Space to Word Buffer */
+                wordBuff += word + ' ';
 
-                /* Modify Word */
-                if (isNewLine) tmpStr = '\n' + word + ' ';
-                else           tmpStr = word + ' ';
-
-                /* Print Word */
-                foreach (char c in tmpStr) {
+                /* For Each Character in Word Buffer */
+                foreach (char c in wordBuff)
+                {
+                    /* Print Character */
                     textBox.text += c;
+
+                    /* Wait (Faster Wait if 'Z' is Held) */
                     yield return new WaitForSeconds(Input.GetKey(KeyCode.Z) ? printDelayFast : printDelay);
                 }
             }
@@ -155,4 +150,58 @@ public class DialogueManager : MonoBehaviour
         /* Indicate That Printing is Over */
         isPrinting = false;
     }
+
+    IEnumerator Scroll()
+    {
+        /* While Scroll Bar Has NOT Reached New Line */
+        float targetScrollPos = scroller.verticalNormalizedPosition - 0.13f;
+        while (scroller.verticalNormalizedPosition >= targetScrollPos)
+        {
+            /* Scroll Text */
+            scroller.verticalNormalizedPosition -= 0.01f;
+            yield return new WaitForSeconds(1E-2f);
+        }
+    }
+
+    IEnumerator MoveArrow ()
+    {
+        /* Print Arrow and Initialize Offset */
+        textBox.text += "  " + "<sprite=\"arrow\" index=2>";
+        isZpressed = false;
+        float off = 2;
+        bool isDown = true;
+        
+        while (!isZpressed)
+        {
+            /* Wait */
+            yield return StartCoroutine(Wait(0.2f));
+
+            /* Update Offset */
+            off += isDown ? -1 : 1;
+            if (off == 0) isDown = false;
+            else if (off == 2) isDown = true;
+
+            /* Update Arrow */
+            textBox.text = textBox.text.Substring(0, textBox.text.Length - "<sprite=\"arrow\" index=2>".Length);
+            textBox.text += "<sprite=\"arrow\" index=" + off.ToString() + ">";
+        }
+
+        /* Remove Arrow and Clear Z-Pressed Flag */
+        textBox.text = textBox.text.Substring(0, textBox.text.Length - "<sprite=\"arrow\" index=2>".Length);
+        isZpressed = false;
+    }
+
+    IEnumerator Wait(float timeOut)
+    {
+        /* Wait For Key or TimeOut */
+        while (!Input.GetKey(KeyCode.Z)) {
+            yield return null;
+            timeOut -= Time.deltaTime;
+            if (timeOut <= 0f) break;
+        }
+
+        /* Assign Z-Press Buffer */
+        isZpressed = timeOut <= 0 ? false : true;
+    }
 }
+

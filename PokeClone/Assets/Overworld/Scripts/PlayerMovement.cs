@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
     /* Private Parameters */
     private Animator anim;
     private OverworldManager overworld;
-    private SpriteRenderer renderer;
+    private new SpriteRenderer renderer;
     private Motion current = new Motion();
     private Motion previous = new Motion();
     private Vector2 targetPos;
