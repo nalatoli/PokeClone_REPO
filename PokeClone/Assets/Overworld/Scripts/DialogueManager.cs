@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class DialogueManager : MonoBehaviour
 {
+    /* Public Instance */
+    public static DialogueManager instance;
+
     /* Game Objects */
     public GameObject textContainer;
     public GameObject scrollerContainer;
@@ -22,6 +25,15 @@ public class DialogueManager : MonoBehaviour
     private ScrollRect scroller;
     private uint lines;
     private bool isZpressed;
+
+    void Awake ()
+    {
+        /* Initialize Instance (Throw Error If More Than One) */
+        if (instance != null)
+            Debug.LogError("More than one Dialogue Manager in this scene.");
+        else
+            instance = this;
+    }
 
     void Start()
     {
@@ -53,10 +65,10 @@ public class DialogueManager : MonoBehaviour
         lines = 1;
     }
 
-    public void SetColor(byte r, byte g, byte b)
+    public void SetColor(Color color)
     {
         /* Set Color of Text */
-        textBox.color = new Color((r <= 255) ? r : 255 / 255f, (g <= 255) ? g : 255 / 255f, (b <= 255) ? b : 255 / 255f);
+        textBox.color = color;
     }
 
     public void PrintText(string text)

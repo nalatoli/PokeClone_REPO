@@ -14,27 +14,33 @@ public class SimpleObjectHandler : MonoBehaviour
     public string text;
 
     /* Private Parameters */
-    private OverworldManager overworld;
-    private DialogueManager dialogue;
+    private PlayerMovement player;
+    private DialogueManager dialouge;
 
     void Start()
     {
         /* Get Dialogue Box */
-        overworld = FindObjectOfType<OverworldManager>();
-        dialogue = FindObjectOfType<DialogueManager>();
+        player = PlayerMovement.instance;
+        dialouge = DialogueManager.instance;
     }
 
-    void doEvent ()
+    void DoEvent ()
+    {
+        /* Initiate Dialogue */
+        InitiateDialogue();   
+    }
+
+    void InitiateDialogue()
     {
         /* Halt Player Control */
-        overworld.isPlayerControllable = false;
+        player.isControllable = false;
 
         /* Execute Dialogue */
-        dialogue.printDelay = 0.02f;
-        dialogue.SetColor(0, 0, 0);
-        dialogue.ClearText();
-        dialogue.SetTextVisibility(true);
-        dialogue.PrintText(text);
+         dialouge.printDelay = 0.02f;
+         dialouge.SetColor(Color.black);
+         dialouge.ClearText();
+         dialouge.SetTextVisibility(true);
+         dialouge.PrintText(text);
 
         /* Wait For Player to End Dialogue */
         StartCoroutine(Wait());
@@ -43,11 +49,11 @@ public class SimpleObjectHandler : MonoBehaviour
     IEnumerator Wait()
     {
         /* Wait For Player to End Dialogue */
-        yield return new WaitUntil(() => (!dialogue.isPrinting && Input.GetKeyDown(KeyCode.Z)));
+        yield return new WaitUntil(() => (!dialouge.isPrinting && Input.GetKeyDown(KeyCode.Z)));
 
         /* Return Control to Player */
-        dialogue.SetTextVisibility(false);
-        overworld.isPlayerControllable = true;
+        dialouge.SetTextVisibility(false);
+        player.isControllable = true;
     }
 
 }

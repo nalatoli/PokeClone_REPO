@@ -14,41 +14,36 @@ public class DoorHandler : MonoBehaviour
     /*Adjustable Parameter */
     public GameObject warpTile;
     
-    /* Private Parameters */
+    /* Private Components */
     private Animator anim;
-    private PlayerMovement playerScript;
-    private Animator playerAnim;
+    private PlayerMovement player;
     private OverworldManager overworld;
+
+    /* Private Parameters */
     private Vector2 warpPosition;
     private GameObject warpArea;
 
     void Start ()
     {
-        /* Initialize Parameters */
+        /* Initialize Components */
         anim = GetComponent<Animator>();
-        overworld = FindObjectOfType<OverworldManager>();
-        warpPosition = warpTile.transform.position;
-
-        /* Get Warp Area */
-        Transform tmpT = warpTile.transform.parent;
-        while (tmpT.tag != "Area") {  tmpT = tmpT.parent; }
-        warpArea = tmpT.gameObject;
+        player = PlayerMovement.instance;
+        overworld = OverworldManager.instance;
     }
 
-    void doEvent(GameObject player)
+    void DoEvent()
     {
-        /* Get Access To Player Movement/Animatior */
-        playerScript = player.GetComponent<PlayerMovement>();
-        playerAnim = player.GetComponent<Animator>();
-
         /* Forcibly Move Player to Door Entrace */
-        StartCoroutine(MovePlayer(player));
+        StartCoroutine(EnterDoor());
     }
 
-    IEnumerator MovePlayer (GameObject player)
+    IEnumerator EnterDoor ()
     {
         /* Halt Control Over the Player */
-        overworld.isPlayerControllable = false;
+        player.isControllable = false;
+
+        /* Face Player Towards Door */
+        player.UpdateAnimation(Vector2.up, 0f);
 
         /* Start Door Open Animation */
         anim.SetBool("isOpen", true);
@@ -56,26 +51,13 @@ public class DoorHandler : MonoBehaviour
         /* Wait A Little For Door To Open */
         yield return new WaitForSeconds(0.5f);
 
-        /* Animate Player */
-        playerAnim.SetFloat("Speed", playerScript.walkingSpeed);
-        playerAnim.SetTrigger("goUp");
+        /* Move Player Into Door */
+        yield return StartCoroutine(player.Move(Vector2.up, player.walkingSpeed));
 
-        /* Move Player Toward Door */
-        while (player.transform.position != transform.position)
-        {
-            player.transform.position = Vector2.MoveTowards(player.transform.position, transform.position, Time.deltaTime * playerScript.walkingSpeed);
-            yield return null;
-        }
-
-        /* Stop Player Animation */
-        playerAnim.SetFloat("Speed", 0);
-        playerAnim.SetTrigger("goUp");
+        /* Stop Player */
+        player.UpdateAnimation(Vector2.up, 0f);
 
         /* Warp Player */
-        playerScript.Transport(warpPosition);
-        overworld.UpdateActiveArea(warpArea);
-
-        /* Return Control To Player */
-        overworld.isPlayerControllable = true;
+        overworld.WarpPlayer(warpTile);
     }
 }
