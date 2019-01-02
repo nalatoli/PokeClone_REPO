@@ -5,18 +5,15 @@ using UnityEngine;
 public class MoveSprite : MonoBehaviour
 {
     public GameObject spriteToMove;
-    public Transform start;
-    public Transform destination;
+    public Vector3 start;
+    public Vector3 destination;
     public float speed;
 
     IEnumerator CR_Move()
     {
-        if(start != null)
-            spriteToMove.transform.position = start.position;
-
-        while (spriteToMove.transform.position != destination.position)
+        while (spriteToMove.transform.position != destination)
         {
-            spriteToMove.transform.position = Vector3.MoveTowards(spriteToMove.transform.position, destination.position, speed * Time.deltaTime);
+            spriteToMove.transform.position = Vector3.MoveTowards(spriteToMove.transform.position, destination, speed * Time.deltaTime);
             yield return null;
         }
     }
@@ -28,7 +25,7 @@ public class MoveSprite : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Move();
+        spriteToMove.transform.position = start;
     }
 
     // Update is called once per frame

@@ -5,7 +5,6 @@ using UnityEngine;
 public class HealthBar : MonoBehaviour
 {
     public SpriteRenderer healthBarRenderer;
-    public float fullness;
 
     private Vector3 centerWhenZero;
     private Vector3 centerWhenFull;
@@ -20,7 +19,6 @@ public class HealthBar : MonoBehaviour
             amount = 0;
         else if (amount > 1)
             amount = 1;
-        fullness = amount;
 
         if (amount > 0.5f)
             healthBarRenderer.color = Color.green;
@@ -62,6 +60,6 @@ public class HealthBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SetFullness(fullness);
+
     }
 }

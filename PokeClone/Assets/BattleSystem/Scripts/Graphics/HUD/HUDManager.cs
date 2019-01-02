@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class HUDManager : MonoBehaviour
 {
+    //The pokemon which are in play
     public Pokemon activePlayerPokemon;
     public Pokemon activeOpponentPokemon;
 
+    //A Text component which will display each active mon's name
     public Text playerPokemonName;
     public Text opponentPokemonName;
 
