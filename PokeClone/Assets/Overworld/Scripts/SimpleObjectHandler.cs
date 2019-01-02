@@ -27,33 +27,26 @@ public class SimpleObjectHandler : MonoBehaviour
     void DoEvent ()
     {
         /* Initiate Dialogue */
-        InitiateDialogue();   
+        StartCoroutine(InitiateDialogue());   
     }
 
-    void InitiateDialogue()
+    IEnumerator InitiateDialogue ()
     {
         /* Halt Player Control */
         player.isControllable = false;
 
         /* Execute Dialogue */
-         dialouge.printDelay = 0.02f;
-         dialouge.SetColor(Color.black);
-         dialouge.ClearText();
-         dialouge.SetTextVisibility(true);
-         dialouge.PrintText(text);
+        dialouge.printDelay = 0.02f;
+        dialouge.SetColor(Color.black);
+        dialouge.ClearText();
+        dialouge.SetTextVisibility(true);
+        yield return StartCoroutine(dialouge.PrintText(text));
 
-        /* Wait For Player to End Dialogue */
-        StartCoroutine(Wait());
-    }
-
-    IEnumerator Wait()
-    {
-        /* Wait For Player to End Dialogue */
-        yield return new WaitUntil(() => (!dialouge.isPrinting && Input.GetKeyDown(KeyCode.Z)));
+        /* Wait For User To Continue */
+        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Z));
 
         /* Return Control to Player */
         dialouge.SetTextVisibility(false);
         player.isControllable = true;
     }
-
 }

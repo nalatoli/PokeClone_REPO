@@ -76,10 +76,10 @@ public class NPCMovement : CharacterMovement
     {
         /* Face NPC Towards Player and Initiate Dialogue */
         UpdateAnimation(player.motion.dir * -1, 0);
-        InitiateDialogue();
+        StartCoroutine(InitiateDialogue());
     }
 
-    void InitiateDialogue ()
+    IEnumerator InitiateDialogue ()
     {
         /* Halt Character Controls */
         player.isControllable = false;
@@ -90,16 +90,10 @@ public class NPCMovement : CharacterMovement
         DialogueManager.instance.SetColor(textColor);
         DialogueManager.instance.ClearText();
         DialogueManager.instance.SetTextVisibility(true);
-        DialogueManager.instance.PrintText(text);
+        yield return StartCoroutine(DialogueManager.instance.PrintText(text));
 
-        /* Wait For Player to End Dialogue */
-        StartCoroutine(Wait());
-    }
-
-    IEnumerator Wait ()
-    {
-        /* Wait For Player to End Dialogue */
-        yield return new WaitUntil(() => (!DialogueManager.instance.isPrinting && Input.GetKeyDown(KeyCode.Z)));
+        /* Wait For User To Continue */
+        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Z));
 
         /* Return Control to Player */
         DialogueManager.instance.SetTextVisibility(false);

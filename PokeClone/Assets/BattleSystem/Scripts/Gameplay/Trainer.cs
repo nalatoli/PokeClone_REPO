@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour
+public class Trainer : MonoBehaviour
 {
+    public string trainerName;
+
+    public Sprite trainerSprite;
+
+    public Pokemon[] party = new Pokemon[6];
     // Start is called before the first frame update
     void Start()
     {
