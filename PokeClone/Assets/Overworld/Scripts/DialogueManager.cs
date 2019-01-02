@@ -18,9 +18,6 @@ public class DialogueManager : MonoBehaviour
     public float printDelay;
     public float printDelayFast;
 
-    /* Public Parameter */
-    public bool isPrinting;
-
     /* Private Parameters */
     private ScrollRect scroller;
     private uint lines;
@@ -33,15 +30,11 @@ public class DialogueManager : MonoBehaviour
             Debug.LogError("More than one Dialogue Manager in this scene.");
         else
             instance = this;
-    }
 
-    void Start()
-    {
         /* Get Component */
         scroller = scrollerContainer.GetComponent<ScrollRect>();
 
         /* Reset Dialogue Box */
-        isPrinting = false;
         SetTextVisibility(false);
         ClearText();
 
@@ -71,17 +64,8 @@ public class DialogueManager : MonoBehaviour
         textBox.color = color;
     }
 
-    public void PrintText(string text)
+    public IEnumerator PrintText(string text)
     {
-        /* Start Displaying the Text */
-        StartCoroutine(DisplayText(text));
-    }
-
-    IEnumerator DisplayText(string text)
-    {
-        /* Initialize Parameters */
-        isPrinting = true;
-
         /* Get Each Word in Dialogue */
         foreach (string word in text.Split(' '))
         {
@@ -89,7 +73,7 @@ public class DialogueManager : MonoBehaviour
             if (word == "<cr>")
             {
                 /* Wait For User to Continue */
-                yield return StartCoroutine(MoveArrow());
+                yield return StartCoroutine(WaitForContinue());
 
                 /* Reset Text Box */
                 ClearText();
@@ -109,7 +93,7 @@ public class DialogueManager : MonoBehaviour
                 if (++lines > 2)
                 {
                     /* Wait for User Then Scroll */
-                    yield return StartCoroutine(MoveArrow());
+                    yield return StartCoroutine(WaitForContinue());
                     yield return StartCoroutine(Scroll());
                 }
 
@@ -121,7 +105,7 @@ public class DialogueManager : MonoBehaviour
             else
             {
                 /* Print Invisible Word and Force Onto Text Box */
-                string wordBuff = "<color=#00000000>" + word + " </color>";
+                string wordBuff = "<color=#00000000>" + word + "AA</color>";
                 textBox.text += wordBuff;
                 Canvas.ForceUpdateCanvases();
 
@@ -139,7 +123,7 @@ public class DialogueManager : MonoBehaviour
                     if (++lines > 2)
                     {
                         /* Wait for User Then Scroll */
-                        yield return StartCoroutine(MoveArrow());
+                        yield return StartCoroutine(WaitForContinue());
                         yield return StartCoroutine(Scroll());
                     }
                 }
@@ -158,31 +142,16 @@ public class DialogueManager : MonoBehaviour
                 }
             }
         }
-
-        /* Indicate That Printing is Over */
-        isPrinting = false;
     }
 
-    IEnumerator Scroll()
-    {
-        /* While Scroll Bar Has NOT Reached New Line */
-        float targetScrollPos = scroller.verticalNormalizedPosition - 0.13f;
-        while (scroller.verticalNormalizedPosition >= targetScrollPos)
-        {
-            /* Scroll Text */
-            scroller.verticalNormalizedPosition -= 0.01f;
-            yield return new WaitForSeconds(1E-2f);
-        }
-    }
-
-    IEnumerator MoveArrow ()
+    IEnumerator WaitForContinue ()
     {
         /* Print Arrow and Initialize Offset */
         textBox.text += "  " + "<sprite=\"arrow\" index=2>";
         isZpressed = false;
         float off = 2;
         bool isDown = true;
-        
+
         while (!isZpressed)
         {
             /* Wait */
@@ -201,12 +170,25 @@ public class DialogueManager : MonoBehaviour
         /* Remove Arrow and Clear Z-Pressed Flag */
         textBox.text = textBox.text.Substring(0, textBox.text.Length - "<sprite=\"arrow\" index=2>".Length);
         isZpressed = false;
+        
+    }
+
+    IEnumerator Scroll()
+    {
+        /* While Scroll Bar Has NOT Reached New Line */
+        float targetScrollPos = scroller.verticalNormalizedPosition - 0.13f;
+        while (scroller.verticalNormalizedPosition >= targetScrollPos)
+        {
+            /* Scroll Text */
+            scroller.verticalNormalizedPosition -= 0.01f;
+            yield return new WaitForSeconds(1E-2f);
+        }
     }
 
     IEnumerator Wait(float timeOut)
     {
         /* Wait For Key or TimeOut */
-        while (!Input.GetKey(KeyCode.Z)) {
+        while (!Input.GetKeyDown(KeyCode.Z)) {
             yield return null;
             timeOut -= Time.deltaTime;
             if (timeOut <= 0f) break;
