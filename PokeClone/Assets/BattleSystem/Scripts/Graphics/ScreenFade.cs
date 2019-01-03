@@ -58,7 +58,6 @@ public class ScreenFade : MonoBehaviour
     {
         fadeColor = renderer.material.color;
         originalAlpha = renderer.material.color.a;
-        renderer.enabled = false;
     }
 
     // Update is called once per frame

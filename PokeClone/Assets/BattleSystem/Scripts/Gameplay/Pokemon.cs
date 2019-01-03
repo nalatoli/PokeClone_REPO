@@ -19,6 +19,11 @@ public class Pokemon : MonoBehaviour
 
     public int exp;
     public int level;
+    
+    public int status;
+    //0: healthy
+    //1: fainted
+    //2: poisoned
 
     // Start is called before the first frame update
     void Start()

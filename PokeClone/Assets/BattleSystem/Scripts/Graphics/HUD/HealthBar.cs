@@ -6,8 +6,7 @@ public class HealthBar : MonoBehaviour
 {
     public SpriteRenderer healthBarRenderer;
 
-    private Vector3 centerWhenZero;
-    private Vector3 centerWhenFull;
+    private Vector3 initialPosition;
     private float initialScale;
     private float fullLength;
     // Start is called before the first frame update
@@ -27,17 +26,19 @@ public class HealthBar : MonoBehaviour
         else
             healthBarRenderer.color = Color.red;
 
+        //calculate new center of health bar
+        //this is needed because the sprite is scaled from its center, which causes the bar to
+        //appear to not deplete to the lefthand side
+        Vector3 newLocalPosition = initialPosition;
+        newLocalPosition.x -= ((fullLength / 2.0f) * (1 - amount));
+        healthBarRenderer.transform.localPosition = newLocalPosition;
+
         //only the x-axis scale factor changes
         healthBarRenderer.transform.localScale = new Vector3(initialScale * amount,
                                                      healthBarRenderer.transform.localScale.y,
                                                      healthBarRenderer.transform.localScale.z);
 
-        //calculate new center of health bar
-        //this is needed because the sprite is scaled from its center, which would cause the bar to
-        //appear to not deplete to the lefthand side
-        Vector3 newCenter = centerWhenZero;
-        newCenter.x += fullLength * amount / 2;
-        healthBarRenderer.transform.localPosition = newCenter;                                                 
+
     }
 
     void Start()
@@ -47,14 +48,14 @@ public class HealthBar : MonoBehaviour
 
         //The absolute width of the health bar at full health
         fullLength = healthBarRenderer.bounds.size.x;
+        //The width after being scaled relative to a parent
+        if(healthBarRenderer.transform.parent != null)
+            fullLength /= healthBarRenderer.transform.parent.localScale.x;
+ 
 
-        //The center position of the health bar at full health
-        centerWhenFull = healthBarRenderer.transform.localPosition;
+        //The center position of the health bar relative to parent at full health
+        initialPosition = healthBarRenderer.transform.localPosition;
 
-        //the position of the zero point of the health bar (leftmost part)
-        centerWhenZero = centerWhenFull;
-        //it's half the horizontal size of the health bar to the left of the center
-        centerWhenZero.x -= fullLength / 2;
     }
 
     // Update is called once per frame

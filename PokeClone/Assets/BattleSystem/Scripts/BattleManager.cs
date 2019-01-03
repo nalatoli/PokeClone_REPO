@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Trainer : MonoBehaviour
+public class BattleManager : MonoBehaviour
 {
-    public string trainerName;
-    private const int partySize = 6;
-
-    public Pokemon[] party = new Pokemon[partySize];
     // Start is called before the first frame update
     void Start()
     {

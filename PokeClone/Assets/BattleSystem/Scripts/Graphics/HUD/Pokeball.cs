@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Trainer : MonoBehaviour
+public class Pokeball : MonoBehaviour
 {
-    public string trainerName;
-    private const int partySize = 6;
-
-    public Pokemon[] party = new Pokemon[partySize];
+    public Sprite empty;
+    public Sprite healthy;
+    public Sprite status;
+    public Sprite fainted;
+    /*
     // Start is called before the first frame update
     void Start()
     {
@@ -19,4 +20,5 @@ public class Trainer : MonoBehaviour
     {
         
     }
+    */
 }
