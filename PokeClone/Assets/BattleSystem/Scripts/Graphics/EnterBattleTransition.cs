@@ -37,6 +37,17 @@ public class EnterBattleTransition : MonoBehaviour
     public MoveSprite[] playerBalls = new MoveSprite[6];
     public MoveSprite[] opponentBalls = new MoveSprite[6];
 
+    public float playerPokemonEnterDelay;
+    public float opponentPokemonEnterDelay;
+
+    public PokeballEffect playerPokemon;
+    public PokeballEffect opponentPokemon;
+
+
+
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -85,10 +96,10 @@ public class EnterBattleTransition : MonoBehaviour
         yield return new WaitForSeconds(playerPartyBarLeaveDelay);
 
         playerPartyBar.GetComponent<ScreenFade>().Fade();
-        playerPartyBar.destination = new Vector3(-300,
+        playerPartyBar.destination = new Vector3(-500,
                                                  playerPartyBar.transform.position.y,
                                                  playerPartyBar.transform.position.z);
-        playerPartyBar.speed = 200;
+        playerPartyBar.speed = 100;
         playerPartyBar.Move();
         yield return new WaitUntil(() => !playerPartyBar.GetComponent<ScreenFade>().isFading);
         Destroy(playerPartyBar.GetComponent<ScreenFade>());
@@ -99,10 +110,10 @@ public class EnterBattleTransition : MonoBehaviour
         yield return new WaitForSeconds(opponentPartyBarLeaveDelay);
 
         opponentPartyBar.GetComponent<ScreenFade>().Fade();
-        opponentPartyBar.destination = new Vector3(300,
+        opponentPartyBar.destination = new Vector3(500,
                                                  opponentPartyBar.transform.position.y,
                                                  opponentPartyBar.transform.position.z);
-        opponentPartyBar.speed = 200;
+        opponentPartyBar.speed = 100;
         opponentPartyBar.Move();
         yield return new WaitUntil(() => !opponentPartyBar.GetComponent<ScreenFade>().isFading);
         Destroy(opponentPartyBar.GetComponent<ScreenFade>());
@@ -156,6 +167,22 @@ public class EnterBattleTransition : MonoBehaviour
         opponent.Move();
     }
 
+    public IEnumerator CR_EnterPlayerPokemon()
+    {
+        yield return new WaitForSeconds(playerPokemonEnterDelay);
+        playerPokemon.GetComponent<SpriteRenderer>().enabled = true;
+        playerPokemon.GetComponent<MoveSprite>().Move();
+        playerPokemon.DisplayPokemonEffect();
+    }
+
+    public IEnumerator CR_EnterOpponentPokemon()
+    {
+        yield return new WaitForSeconds(opponentPokemonEnterDelay);
+        opponentPokemon.GetComponent<SpriteRenderer>().enabled = true;
+        opponentPokemon.GetComponent<MoveSprite>().Move();
+        opponentPokemon.DisplayPokemonEffect();
+    }
+
     public IEnumerator CR_RepeatFade()
     {
         for(int i=0; i<numScreenFades; i++)
@@ -180,6 +207,8 @@ public class EnterBattleTransition : MonoBehaviour
         {
             if (battleInfo.player.party[i] == null)
                 break;
+            //Pokemon should not be drawn right when the battle starts
+            battleInfo.player.party[i].GetComponent<SpriteRenderer>().enabled = false;
             playerBalls[i].GetComponent<SpriteRenderer>().sprite = battleInfo.DetermineSpriteForBall(battleInfo.player.party[i].status);
         }
 
@@ -188,6 +217,8 @@ public class EnterBattleTransition : MonoBehaviour
         {
             if (battleInfo.opponent.party[i] == null)
                 break;
+            //Pokemon should not be drawn right when the battle starts
+            battleInfo.opponent.party[i].GetComponent<SpriteRenderer>().enabled = false;
             opponentBalls[i].GetComponent<SpriteRenderer>().sprite = battleInfo.DetermineSpriteForBall(battleInfo.opponent.party[i].status);
         }
 
@@ -203,6 +234,8 @@ public class EnterBattleTransition : MonoBehaviour
         StartCoroutine("CR_LeaveOpponentBalls");
         StartCoroutine("CR_LeavePlayer");
         StartCoroutine("CR_LeaveOpponent");
+        StartCoroutine("CR_EnterPlayerPokemon");
+        StartCoroutine("CR_EnterOpponentPokemon");
     }
 
     // Update is called once per frame
