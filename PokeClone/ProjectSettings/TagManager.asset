@@ -5,10 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - TallGrass
-  - Obstacle
-  - Interactable
-  - Mover
   - Area
+  - Door
+  - Stairs
   layers:
   - Default
   - TransparentFX
@@ -18,10 +17,10 @@ TagManager:
   - UI
   - 
   - 
-  - Object
+  - Obstacle
+  - Interactable
   - Character
-  - 
-  - 
+  - Mover
   - 
   - 
   - 
@@ -46,18 +45,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Environment
+  - name: Background
     uniqueID: 3738150289
     locked: 0
-  - name: Buildings
+  - name: Character
     uniqueID: 3305385481
     locked: 0
-  - name: Doors
+  - name: Foreground
     uniqueID: 694679947
     locked: 0
-  - name: Character
+  - name: Overlay
     uniqueID: 1712723027
-    locked: 0
-  - name: Trees
-    uniqueID: 903384423
     locked: 0

@@ -46,6 +46,9 @@ TextureImporter:
     21300082: house_roof
     21300084: lab_roof
     21300086: tree
+    21300088: treesection
+    21300090: treetop
+    21300092: treewithtop
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -216,7 +219,7 @@ TextureImporter:
         x: 66
         y: 237
         width: 12
-        height: 16
+        height: 22
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -236,7 +239,7 @@ TextureImporter:
         x: 80
         y: 237
         width: 80
-        height: 16
+        height: 17
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -890,53 +893,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: door1
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 239
-        width: 16
-        height: 15
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ab37c1dde5d3d0c4184eed29149e658c
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: door2
-      rect:
-        serializedVersion: 2
-        x: 256
-        y: 143
-        width: 16
-        height: 15
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9e133a83596800c44a7f11770be1d41f
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: house_roof
       rect:
         serializedVersion: 2
         x: 80
-        y: 253
+        y: 254
         width: 80
-        height: 56
+        height: 55
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -970,13 +933,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: mailbox1_top
+      name: tree
       rect:
         serializedVersion: 2
-        x: 66
-        y: 253
-        width: 12
-        height: 6
+        x: 352
+        y: 205
+        width: 32
+        height: 45
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -984,27 +947,67 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0fc1bcbef469f5f439c7c69383e6722f
+      spriteID: 3aac12b48fba3ab488218437b1910f9b
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tree
+      name: treesection
       rect:
         serializedVersion: 2
-        x: 353
-        y: 205
-        width: 31
-        height: 45
+        x: 352
+        y: 250
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3aac12b48fba3ab488218437b1910f9b
+      spriteID: 5b7eec7d3648c734da73b3ac42b4a361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: treetop
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 218
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7206d79db91a2844b80336a49e9fec3e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: treewithtop
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 141
+        width: 32
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b8eefefcd255554d96506ff49e08d43
       vertices: []
       indices: 
       edges: []
